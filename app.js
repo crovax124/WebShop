@@ -2,6 +2,7 @@ const path = require('path');
 
 const express = require('express');
 
+const db = require('./data/database')
 // const session = require('express-session');
 // const csrf = require('csurf');
 
@@ -21,4 +22,10 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use(authRoutes);
 
-app.listen(3000);
+db.connectToDataBase().then(function() {
+    app.listen(3000);
+}).catch(function (error) {
+    console.log('Failed to connect to Database');
+    console.log(error);
+});
+
