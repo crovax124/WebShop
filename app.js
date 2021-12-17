@@ -3,12 +3,11 @@ const path = require('path');
 const express = require('express');
 
 const db = require('./data/database')
-const session = require('express-session');
-const sessionConfig = require('./config/session');
+const expressSession = require('express-session');
+const createSessionConfig = require('./config/session');
 
 const addCrsfTokenMiddleware = require('./middlewares/csrf-token');
 const errorHandlerMiddleware = require('./middlewares/error-handler');
-const mongoDbSessionStore = sessionConfig.createSessionStore(session);
 
 const csrf = require('csurf');                                                                  // authentitication
 
@@ -23,7 +22,10 @@ app.set('views', path.join(__dirname, 'views'));
 
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: false }));
-app.use(session(sessionConfig.createSessionConfig(mongoDbSessionStore)));
+
+const sessionConfig = createSessionConfig();
+
+app.use(expressSession(sessionConfig));
 
 app.use(csrf());
 app.use(addCrsfTokenMiddleware);
